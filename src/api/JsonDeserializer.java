@@ -44,7 +44,7 @@ public class JsonDeserializer implements com.google.gson.JsonDeserializer<DWGrap
                 JsonElement jsonValueElement_1 = set_1.getValue();
                 int src = jsonValueElement_1.getAsJsonObject().get("_src").getAsInt();
                 dest = jsonValueElement_1.getAsJsonObject().get("_dest").getAsInt();
-                double weight = jsonValueElement_1.getAsJsonObject().get("_weight").getAsDouble();
+                double weight = jsonValueElement_1.getAsJsonObject().get("_weight").getAsDouble(); //need to be updated
                 int tag = jsonValueElement_1.getAsJsonObject().get("_tag").getAsInt();
                 edge_data edgeToAdd = new DWGraph_DS.EdgeData(src,dest,weight,tag);
                 edges.put(dest,edgeToAdd);
