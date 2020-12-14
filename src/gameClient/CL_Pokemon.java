@@ -1,38 +1,45 @@
 package gameClient;
 import api.edge_data;
 import gameClient.util.Point3D;
+import org.jetbrains.annotations.NotNull;
 import org.json.JSONObject;
 
-public class CL_Pokemon {
+public class CL_Pokemon implements Comparable<CL_Pokemon> {
 	private edge_data _edge;
-	private double _value;
-	private int _type;
-	private Point3D _pos;
+	private final double _value;
+	private final int _type;
+	private final Point3D _pos;
 	private double min_dist;
 	private int min_ro;
-	
+	private int closestAgentNode;
+
 	public CL_Pokemon(Point3D p, int t, double v, double s, edge_data e) {
 		_type = t;
-	//	_speed = s;
+		//	_speed = s;
 		_value = v;
 		set_edge(e);
 		_pos = p;
 		min_dist = -1;
 		min_ro = -1;
+		closestAgentNode = -1;
 	}
+
 	public static CL_Pokemon init_from_json(String json) {
 		CL_Pokemon ans = null;
 		try {
 			JSONObject p = new JSONObject(json);
 			int id = p.getInt("id");
 
-		}
-		catch(Exception e) {
+		} catch (Exception e) {
 			e.printStackTrace();
 		}
 		return ans;
 	}
-	public String toString() {return "F:{v="+_value+", t="+_type+"}";}
+
+	public String toString() {
+		return "F:{v=" + _value + ", t=" + _type + "}";
+	}
+
 	public edge_data get_edge() {
 		return _edge;
 	}
@@ -44,9 +51,23 @@ public class CL_Pokemon {
 	public Point3D getLocation() {
 		return _pos;
 	}
-	public int getType() {return _type;}
-//	public double getSpeed() {return _speed;}
-	public double getValue() {return _value;}
+
+	public int getType() {
+		return _type;
+	}
+
+	public int getClosestAgentNode() {
+		return closestAgentNode;
+	}
+
+	public void setClosestAgentNode(int closestAgentNode) {
+		this.closestAgentNode = closestAgentNode;
+	}
+
+	//	public double getSpeed() {return _speed;}
+	public double getValue() {
+		return _value;
+	}
 
 	public double getMin_dist() {
 		return min_dist;
@@ -62,5 +83,10 @@ public class CL_Pokemon {
 
 	public void setMin_ro(int min_ro) {
 		this.min_ro = min_ro;
+	}
+
+	@Override
+	public int compareTo(@NotNull CL_Pokemon o) {
+		return Double.compare(o.getValue(), getValue());
 	}
 }

@@ -7,7 +7,8 @@ import api.node_data;
 import gameClient.util.Point3D;
 import gameClient.util.Range;
 import gameClient.util.Range2D;
-
+import javax.swing.*;
+import java.awt.*;
 import javax.swing.*;
 import java.awt.*;
 import java.util.Iterator;
@@ -28,6 +29,14 @@ public class MyFrame extends JFrame{
 		super(a);
 		int _ind = 0;
 	}
+	MyFrame(String a,int w,int h){
+		super(a);
+		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		this.setSize(w,h);
+		ImageIcon image = new ImageIcon("data/Pokemon-Logo.png");
+		this.setIconImage(image.getImage());
+		this.setVisible(true);
+	}
 	public void update(Arena ar) {
 		this._ar = ar;
 		updateFrame();
@@ -39,6 +48,7 @@ public class MyFrame extends JFrame{
 		Range2D frame = new Range2D(rx,ry);
 		directed_weighted_graph g = _ar.getGraph();
 		_w2f = Arena.w2f(g,frame);
+		//this.setVisible(true);
 	}
 	public void paint(Graphics g) {
 		int w = this.getWidth();
@@ -125,6 +135,17 @@ public class MyFrame extends JFrame{
 		geo_location s0 = this._w2f.world2frame(s);
 		geo_location d0 = this._w2f.world2frame(d);
 		g.drawLine((int)s0.x(), (int)s0.y(), (int)d0.x(), (int)d0.y());
+
 	//	g.drawString(""+n.getKey(), fp.ix(), fp.iy()-4*r);
 	}
+	public void initLog() {
+		//MyPanel panel = new MyPanel("login");
+	//	this.add(panel);
+	//	this.setVisible(true);
+		//panel.setVisible(true);
+	//	panel.setBackground(Color.BLACK);
+		//this.setBackground(Color.green);
+
+	}
+
 }

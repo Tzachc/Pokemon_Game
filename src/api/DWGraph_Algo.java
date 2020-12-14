@@ -1,21 +1,25 @@
 package api;
-import java.io.Serializable;
+
+import java.io.*;
+
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import java.io.PrintWriter;
-import java.io.File;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
+import com.google.gson.stream.JsonWriter;
+
 import java.util.*;
 
-public class DWGraph_Algo implements dw_graph_algorithms,Serializable{
+public class DWGraph_Algo implements dw_graph_algorithms, Serializable {
     directed_weighted_graph graph;
-    public DWGraph_Algo(){
+
+    public DWGraph_Algo() {
         this.graph = new DWGraph_DS();
     }
+
     @Override
     public void init(directed_weighted_graph g) {
-    this.graph = g;
+        this.graph = g;
     }
 
     @Override
@@ -34,7 +38,7 @@ public class DWGraph_Algo implements dw_graph_algorithms,Serializable{
         if (graph.nodeSize() == 0 || graph.nodeSize() == 1)
             return true;
         Iterator<node_data> it = graph.getV().iterator();
-        while(it.hasNext()) {
+        while (it.hasNext()) {
             node_data curr = it.next();
             BFS(curr.getKey());
             for (node_data node : this.graph.getV()) {
@@ -48,17 +52,22 @@ public class DWGraph_Algo implements dw_graph_algorithms,Serializable{
 
     @Override
     public double shortestPathDist(int src, int dest) {
-        double distance = Dijkstra(this.graph.getNode(src), this.graph.getNode(dest));
-        InitDijkstra();
-        if (distance == Integer.MAX_VALUE) {
-            return -1;
+        if(this.graph.getNode(src) != null&&this.graph.getNode(dest)!=null) {
+            double distance = Dijkstra(this.graph.getNode(src), this.graph.getNode(dest));
+            InitDijkstra();
+            if (distance == Integer.MAX_VALUE) {
+                return -1;
+            }
+            return distance;
         }
-        return distance;
+        //return distance;
+        return -1;
     }
 
     @Override
     public List<node_data> shortestPath(int src, int dest) {
         List<node_data> ans = new ArrayList<node_data>();
+        if(graph.getNode(src) != null && graph.getNode(dest) != null)
         Dijkstra(graph.getNode(src), graph.getNode(dest));
 
         if (src == dest) {
@@ -86,17 +95,42 @@ public class DWGraph_Algo implements dw_graph_algorithms,Serializable{
 
     @Override
     public boolean save(String file) {
-        Gson gson= new GsonBuilder().setPrettyPrinting().create();
-        String json = gson.toJson(graph);
-        System.out.printf(json);
-        try
-        {
-            PrintWriter pw = new PrintWriter(new File(file));
-            pw.write(json);
-            pw.close();
+        JsonObject graph = new JsonObject();
+
+        JsonArray node = new JsonArray();
+        JsonArray edge = new JsonArray();
+        Iterator<node_data> it = this.graph.getV().iterator();
+        while(it.hasNext()) {
+            node_data n = it.next();
+            JsonObject gson = new JsonObject();
+            gson.addProperty("id", n.getKey());
+            String pos = n.getLocation().x() + "," + n.getLocation().y() + "," + n.getLocation().z();
+            gson.addProperty("pos", pos);
+            node.add(gson);
         }
-        catch (FileNotFoundException e)
-        {
+
+        graph.add("Nodes", node);
+        for (HashMap<Integer, edge_data> n : (((DWGraph_DS) (this.graph)).getE())) {
+            Iterator itr = n.values().iterator();
+            while (itr.hasNext()) {
+                edge_data nn = (edge_data) itr.next();
+                JsonObject gson = new JsonObject();
+                gson.addProperty("dest", nn.getDest());
+                gson.addProperty("w", nn.getWeight());
+                gson.addProperty("src", nn.getSrc());
+
+                edge.add(gson);
+            }
+        }
+
+        graph.add("Edges", edge);
+
+        try {
+            Gson gson = new Gson();
+            PrintWriter pw = new PrintWriter(new File(file));
+            pw.write(gson.toJson(graph));
+            pw.close();
+        } catch (FileNotFoundException e) {
             e.printStackTrace();
             return false;
         }
@@ -105,28 +139,27 @@ public class DWGraph_Algo implements dw_graph_algorithms,Serializable{
 
     @Override
     public boolean load(String file) {
-        //Gson gson = new Gson();
-        try
-        {
+        try {
             GsonBuilder builder = new GsonBuilder();
-            builder.registerTypeAdapter(DWGraph_DS.class,new JsonDeserializer());
+            builder.registerTypeAdapter(DWGraph_DS.class, new JsonDeserializer());
             Gson gson = builder.create();
 
             FileReader reader = new FileReader(file);
-            DWGraph_DS g = gson.fromJson(reader,DWGraph_DS.class);
-            this.graph=g;
-        }
-        catch (FileNotFoundException e) {
+            DWGraph_DS g = gson.fromJson(reader, DWGraph_DS.class);
+            this.graph = g;
+        } catch (FileNotFoundException e) {
             e.printStackTrace();
             return false;
 
         }
         return true;
     }
+
     /**
      * BFS algorithm to find if there is a path between
      * given node to every node
      * created to be used in the graph connectivity method.
+     *
      * @param s
      */
     void BFS(int s) {
@@ -153,13 +186,13 @@ public class DWGraph_Algo implements dw_graph_algorithms,Serializable{
                     queue.add(n.getDest());
                 }
             }
-           // nodeS.setTag(3);
+            // nodeS.setTag(3);
         }
     }
 
     /**
      * init the BFS, tags = 0
-     *  0 = white, 1 = gray, 3 = black.
+     * 0 = white, 1 = gray, 3 = black.
      */
     private void InitBFS() {
         Iterator<node_data> it = this.graph.getV().iterator();
@@ -172,6 +205,7 @@ public class DWGraph_Algo implements dw_graph_algorithms,Serializable{
      * this method implements Dijkstra algorithm in order
      * to find the shortest path on weighted graph.
      * the algorithm use Priority queue.
+     *
      * @param src
      * @param dest
      * @return
@@ -184,23 +218,17 @@ public class DWGraph_Algo implements dw_graph_algorithms,Serializable{
         pq.add(src);
         boolean flag;
         double shortDist = Integer.MAX_VALUE;
-        if(src == dest){
+        if (src == dest) {
             return src.getTag();
         }
         while (!pq.isEmpty()) {
             DWGraph_DS.NodeData temp = (DWGraph_DS.NodeData) pq.poll();
-            Iterator<edge_data> it = graph.getE(temp.getKey()).iterator();
-            for(edge_data edge : graph.getE(temp.getKey())) {
+            for (edge_data edge : graph.getE(temp.getKey())) {
                 node_data destNode = graph.getNode(edge.getDest());
-                if (destNode.getInfo() == "white" && destNode !=null) {
+                if (destNode.getInfo() == "white" && destNode != null) {
                     DWGraph_DS.NodeData destNodeNode = (DWGraph_DS.NodeData) destNode;
-                    DWGraph_DS.EdgeData temp2 = (DWGraph_DS.EdgeData) edge;
                     if (destNode.getTag() > temp.getTag() + edge.getWeight()) {
-                        destNode.setTag(extractMin(temp.getKey(),destNode.getKey()));
-                        //temp2.setPre(temp);
-                       // destNode.setPre(temp);
-                      //  temp2.setPre(temp);
-                      //  ((DWGraph_DS.EdgeData) edge).setPre(temp);
+                        destNode.setTag(extractMin(temp.getKey(), destNode.getKey()));
                         destNodeNode.setPre(temp);
 
                     }
@@ -208,7 +236,7 @@ public class DWGraph_Algo implements dw_graph_algorithms,Serializable{
                 }
             }
             temp.setInfo("gray");
-            flag = finish(temp.getKey(),dest.getKey());
+            flag = finish(temp.getKey(), dest.getKey());
             if (flag) {
                 return graph.getNode(dest.getKey()).getTag();
             }
@@ -216,8 +244,8 @@ public class DWGraph_Algo implements dw_graph_algorithms,Serializable{
         return shortDist;
     }
 
-    public boolean finish(int node1,int node2){
-        if(node1 == node2){
+    public boolean finish(int node1, int node2) {
+        if (node1 == node2) {
             return true;
         }
         return false;
@@ -226,16 +254,17 @@ public class DWGraph_Algo implements dw_graph_algorithms,Serializable{
     /**
      * this method is a helper method for the Dijkstra algorithm,
      * to find the min in the priority queue and extract it.
+     *
      * @param n
      * @param temp
      * @return
      */
-    private int extractMin(int n,int temp){
+    private int extractMin(int n, int temp) {
         node_data nodeTemp = this.graph.getNode(temp);
         node_data nodeN = this.graph.getNode(n);
-        double tempTag = (nodeN.getTag() + this.graph.getEdge(nodeN.getKey(),nodeTemp.getKey()).getWeight());
-        double min = Math.min(nodeTemp.getTag(),tempTag);
-        return (int)min;
+        double tempTag = (nodeN.getTag() + this.graph.getEdge(nodeN.getKey(), nodeTemp.getKey()).getWeight());
+        double min = Math.min(nodeTemp.getTag(), tempTag);
+        return (int) min;
     }
 
     /**
@@ -248,9 +277,9 @@ public class DWGraph_Algo implements dw_graph_algorithms,Serializable{
     private void InitDijkstra() {
         DWGraph_DS.NodeData preNode;
         Iterator<node_data> it = this.graph.getV().iterator();
-        while(it.hasNext()){
+        while (it.hasNext()) {
             node_data node = it.next();
-            preNode = (DWGraph_DS.NodeData)node;
+            preNode = (DWGraph_DS.NodeData) node;
             node.setTag(Integer.MAX_VALUE);
             node.setInfo("white");
             preNode.setPre(null);
@@ -258,12 +287,13 @@ public class DWGraph_Algo implements dw_graph_algorithms,Serializable{
         Iterator<node_data> itr = this.graph.getV().iterator();
         DWGraph_DS.EdgeData preEdge;
         for (edge_data edge : this.graph.getE(itr.next().getKey())) {
-            preEdge = (DWGraph_DS.EdgeData)edge;
+            preEdge = (DWGraph_DS.EdgeData) edge;
             edge.setTag(Integer.MAX_VALUE);
             edge.setInfo("white");
             preEdge.setPre(null);
         }
     }
+
     public void printGraph() {
         int src_vertex = 0;
         int i = 0;
@@ -292,5 +322,6 @@ public class DWGraph_Algo implements dw_graph_algorithms,Serializable{
             i++;
         }
     }
+
 }
 

@@ -1,4 +1,3 @@
-package tests;
 
 import static org.junit.jupiter.api.Assertions.*;
 import api.*;
@@ -124,12 +123,17 @@ public class DWGraph_Algo_JuintTests {
         cops.init(nodesGraph);
         cops.save("graph.json");
         DWGraph_Algo graph_other = new DWGraph_Algo();
-        //graph_other.load("A0");
+       // graph_other.load("data/A0");
        // DWGraph_DS newnew = new DWGraph_DS();
        // DWGraph_Algo cops2 = new DWGraph_Algo();
-
-        graph_other.load("A0");
+        graph_other.load("graph.json");
+        directed_weighted_graph loadGraph = graph_other.getGraph();
+        assertEquals(cops.getGraph(),loadGraph);
+        nodesGraph.removeNode(2);
+        assertNotEquals(cops.getGraph(),loadGraph);
+        cops.load("data/A5");
         //graph_other.printGraph();
+
     }
 
 }

@@ -92,6 +92,10 @@ public DWGraph_DS(HashMap<Integer,node_data>nodes,HashMap<Integer,HashMap<Intege
         return this.Edges.get(node_id).values();
     }
 
+    public Collection<HashMap<Integer,edge_data>> getE() {
+        return Edges.values();
+    }
+
     @Override
     public node_data removeNode(int key) {
         boolean flag = Nodes.containsKey(key);
@@ -140,6 +144,17 @@ public DWGraph_DS(HashMap<Integer,node_data>nodes,HashMap<Integer,HashMap<Intege
         return this.MC;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        DWGraph_DS that = (DWGraph_DS) o;
+        if (MC != that.MC) return false;
+        if (edgesCounter != that.edgesCounter) return false;
+        if (!Nodes.equals(that.Nodes)) return false;
+        return Edges.equals(that.Edges);
+    }
+
     public static class NodeData implements node_data,Comparable<NodeData>,Serializable {
         private int id;
         private String _info;
@@ -153,7 +168,7 @@ public DWGraph_DS(HashMap<Integer,node_data>nodes,HashMap<Integer,HashMap<Intege
             this._tag = 0;
             this.id = key;
             this.pre = null;
-            this.location = new Geo_Location();
+            this.location = new GeoLocation();
         }
 
         public NodeData(node_data node) {
@@ -162,13 +177,7 @@ public DWGraph_DS(HashMap<Integer,node_data>nodes,HashMap<Integer,HashMap<Intege
             this._tag = node.getTag();
             this.location = node.getLocation();
         }
-        public NodeData(int key,String info,int tag,double weight,double x,double y,double z){
-            this.id = key;
-            this._info = info;
-            this._tag = tag;
-            this._weight = weight;
-            this.location = new Geo_Location(x,y,z);
-        }
+
         public NodeData(int key, double w) {
 
             this.id = key;
@@ -176,7 +185,15 @@ public DWGraph_DS(HashMap<Integer,node_data>nodes,HashMap<Integer,HashMap<Intege
             this._info = "";
             this._tag = 0;
             this.pre = null;
-            this.location = new Geo_Location();
+            this.location = new GeoLocation();
+        }
+        public NodeData(int key, geo_location ge) {
+
+            this.id = key;
+            this._weight = -1;
+            this.location = ge;
+            this._info = "";
+            this._tag = 0;
         }
         @Override
         public int getKey() {
@@ -190,7 +207,7 @@ public DWGraph_DS(HashMap<Integer,node_data>nodes,HashMap<Integer,HashMap<Intege
 
         @Override
         public void setLocation(geo_location p) {
-            this.location = new Geo_Location(p);
+            this.location = new GeoLocation(p);
 
         }
 
@@ -223,6 +240,7 @@ public DWGraph_DS(HashMap<Integer,node_data>nodes,HashMap<Integer,HashMap<Intege
         public void setTag(int t) {
             this._tag = t;
         }
+
         @Override
         public int compareTo(NodeData o) {
             return Double.compare(this.getTag(), o.getTag());
@@ -242,51 +260,14 @@ public DWGraph_DS(HashMap<Integer,node_data>nodes,HashMap<Integer,HashMap<Intege
         public void setPre(node_data n) {
             this.pre = n;
         }
+        @Override
+        public boolean equals(Object o) {
+            if (this == o) return true;
+            if (o == null || getClass() != o.getClass()) return false;
 
-        public class Geo_Location implements geo_location {
-            private double x, y, z;
+            NodeData nodeData = (NodeData) o;
 
-            public Geo_Location() {
-                this.x=0.0;
-                this.y=0.0;
-                this.z=0.0;
-            }
-
-            public Geo_Location(double x, double y, double z) {
-                this.x = x;
-                this.y = y;
-                this.z = z;
-
-            }
-
-            public Geo_Location(geo_location p) {
-                this.x = p.x();
-                this.y = p.y();
-                this.z = p.z();
-            }
-
-            @Override
-            public double x() {
-                return x;
-            }
-
-            @Override
-            public double y() {
-                return y;
-            }
-
-            @Override
-            public double z() {
-                return z;
-            }
-
-            @Override
-            public double distance(geo_location g) {
-                double xd = Math.pow(x - g.x(), 2);
-                double yd = Math.pow(y - g.y(), 2);
-                double zd = Math.pow(z - g.z(), 2);
-                return Math.sqrt(xd + yd + zd);
-            }
+            return id == nodeData.id;
         }
     }
 
@@ -381,6 +362,13 @@ public DWGraph_DS(HashMap<Integer,node_data>nodes,HashMap<Integer,HashMap<Intege
          */
         public void setPre(node_data n) {
             this.pre = n;
+        }
+        public boolean equals(Object o) {
+            if (!(o instanceof edge_data)) return false;
+            if (_weight != (((edge_data) o).getWeight())) return false;
+            if (this._src != ((edge_data) o).getSrc()) return false;
+            if (this._dest != ((edge_data) o).getDest()) return false;
+            return true;
         }
     }
 }

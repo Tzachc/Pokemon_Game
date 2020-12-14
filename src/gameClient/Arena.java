@@ -29,6 +29,7 @@ public class Arena {
 	private List<String> _info;
 	private static Point3D MIN = new Point3D(0, 100,0);
 	private static Point3D MAX = new Point3D(0, 100,0);
+	private String time;
 
 	public Arena() {;
 		_info = new ArrayList<String>();
@@ -65,7 +66,13 @@ public class Arena {
 	public List<CL_Agent> getAgents() {return _agents;}
 	public List<CL_Pokemon> getPokemons() {return _pokemons;}
 
-	
+
+	public void setTime(String t) {
+		this.time = t;
+	}
+	public String getTime(){
+		return this.time;
+	}
 	public directed_weighted_graph getGraph() {
 		return _gg;
 	}

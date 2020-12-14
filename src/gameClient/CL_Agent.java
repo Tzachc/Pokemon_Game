@@ -7,6 +7,8 @@ import api.node_data;
 import gameClient.util.Point3D;
 import org.json.JSONObject;
 
+import java.util.List;
+
 public class CL_Agent {
 		public static final double EPS = 0.0001;
 		private static int _count = 0;
@@ -19,9 +21,12 @@ public class CL_Agent {
 		private node_data _curr_node;
 		private directed_weighted_graph _gg;
 		private CL_Pokemon _curr_fruit;
-		private long _sg_dt;
-		
-		private double _value;
+	private int isAvailableAgent =-1;
+
+	private long _sg_dt;
+	private List<node_data> path;
+
+	private double _value;
 		
 		
 		public CL_Agent(directed_weighted_graph g, int start_node) {
@@ -32,7 +37,12 @@ public class CL_Agent {
 			_id = -1;
 			setSpeed(0);
 		}
-		public void update(String json) {
+	public void setPath(List<node_data> path, node_data n) {
+		this.path = path;
+		path.add(n);
+	}
+
+	public void update(String json) {
 			JSONObject line;
 			try {
 				// "GameServer":{"graph":"A0","pokemons":3,"agents":1}}
@@ -166,4 +176,7 @@ public class CL_Agent {
 		public void set_sg_dt(long _sg_dt) {
 			this._sg_dt = _sg_dt;
 		}
+	public long getisAvailableAgent() {
+		return isAvailableAgent;
+	}
 	}
