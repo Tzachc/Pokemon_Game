@@ -58,3 +58,28 @@ implements the interface dw_graph_algorithms, and in this class we implements so
 
 # About the game:
 
+![alt text](https://github.com/Tzachc/Pokemon_Game/blob/main/data/game.png)
+
+Pokemon game is a simple game, that have 24 stages for now, the idea of the game is that at every stage their different number of agents.
+the goal is to catch the most of the pokemons on the graph in the limited time.
+check out our best results at Wiki page.
+
+**How to play??**
+
+download the "Ex2.jar" file **and** the Data file and put them in the same folder.
+
+ 1) Run the Ex2.jar file, a login menu will be opened.
+ you have 2 options:
+ you can enter your ID and stage number and click "Login" - the game will run and your grade will be saved.
+ othewise you can click on the "No ID game" and just enter stage .
+ 
+ 2) enter the folder space in the CMD and run the command: 
+ 
+     java -jar Ex2.jar <**YourID**> <**stage**>
+     
+  by doing that, you will skip the login menu part.
+  
+  
+
+
+**Enjoy!**
