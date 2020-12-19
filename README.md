@@ -70,6 +70,7 @@ download the "Ex2.jar" file **and** the Data file and put them in the same folde
 
  1) Run the Ex2.jar file, a login menu will be opened.
  you have 2 options:
+ 
  you can enter your ID and stage number and click "Login" - the game will run and your grade will be saved.
  othewise you can click on the "No ID game" and just enter stage .
  
