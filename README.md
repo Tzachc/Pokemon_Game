@@ -29,4 +29,32 @@ in this class we have severle of methods:
 
 **removeEdge** : method to remove edge.
 
+in additional to all that, we have 2 inside classes **NodeData** and **EdgeData** which represent 
+a simple node and edge in the graph.
+
+
+**DWGraph_Algo** : 
+
+implements the interface dw_graph_algorithms, and in this class we implements some algorithms that help us do "moves" in our game:
+
+**copy** : preform a deep copy of the graph.
+
+**isConnected** : check the graph Connectivity - "Strongly Connected" as the graph is directed.
+
+**shortestPathDist** : method that find the sum of the cheapest weight of the shortestPath.
+
+**shortestPath** : method that return the path itself (List).
+
+**save** : save the graph into Json format.
+
+**load** : load a graph from Json format.
+
+**BFS** : algorithm to find if there is a path between one node to every node.
+
+**Dijkstra** : helper method to finnd the shortest path on weighted graph.
+
+**extractMin** : helper method used in Dijkstra algorithm,that extract min from the priority queue.
+
+
+# About the game:
 
