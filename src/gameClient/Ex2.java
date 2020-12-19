@@ -17,15 +17,22 @@ public class Ex2 implements Runnable {
     private static Arena _ar;
     private static LinkedList<Integer> agentAndPokemons = new LinkedList<>();
     public List<CL_Pokemon> pokemon_list = new ArrayList<>(); // list of pokemons we have
-    private static HashMap<Integer, Integer> onTheWay = new HashMap<>(); //<dest,agID>
     private static node_data temp;
     private static int _id = -1;
     private static int numGame = 0;
     private boolean flag = false;
     private static LoginFrame login;
-
+    private static boolean CMDactive = false;
     // private static LinkedList<Integer> pokemon_LIST = new LinkedList<>();
     //private static Vector<Set> agentsAndPoke = new Vector<>();
+
+    /**
+     * main method to check if the user play from CMD
+     * or using the GUI login.
+     * then start the game.
+     * @param args
+     * @throws Exception
+     */
     public static void main(String[] args) throws Exception {
         Thread client = new Thread(new Ex2());
         //  client.start();
@@ -44,18 +51,34 @@ public class Ex2 implements Runnable {
             _id = login.getID();
             numGame = login.getStage();
             login.exit();
-
         } else {
-            _id = Integer.parseInt(args[0]);
-            numGame = Integer.parseInt(args[1]);
+            try {
+                CMDactive = true;
+                _id = Integer.parseInt(args[0]);
+                numGame = Integer.parseInt(args[1]);
+            }
+            catch (Exception e){
+                _id = -1;
+                numGame =0;
+            }
+            client.start();
+            player1.start();
         }
-        if (login.getIndex() == 2)
-            exit(0);
-        client.start();
-        player1.start();
-        //  exit(0);
+        if(!CMDactive) {
+            if (login.getIndex() == 2) {
+                exit(0);
+            }
+        }
+        if(!CMDactive) {
+            client.start();
+            player1.start();
+            //  exit(0);
+        }
     }
 
+    /**
+     * override method used in the Thread EX2.
+     */
     @Override
     public void run() {
         //  numGame = 0;
@@ -85,7 +108,6 @@ public class Ex2 implements Runnable {
                 }
                 if (game.timeToEnd() < 25000) dt = 85;
                 if(game.timeToEnd() < 17000) dt = 100;
-
         }
         String res = game.toString();
 
@@ -93,6 +115,11 @@ public class Ex2 implements Runnable {
         exit(0);
     }
 
+    /**
+     * load graph from Json format,same as in DWGraph_Algo.
+     * @param s
+     * @return
+     */
     private directed_weighted_graph loadGraph(String s) {
         GsonBuilder builder = new GsonBuilder();
         builder.registerTypeAdapter(DWGraph_DS.class, new JsonDeserializer());
@@ -106,13 +133,19 @@ public class Ex2 implements Runnable {
         return null;
     }
 
+    /**
+     * initiallize the game,and set Arena.
+     * start GUI for the graph.
+     * added pokemons and agents to the graph.
+     * @param game
+     */
     private void init(game_service game) {
         String pokemons = game.getPokemons();
         directed_weighted_graph graph = loadGraph(game.getGraph());
         _ar = new Arena();
         _ar.setGraph(graph);
         _ar.setPokemons(Arena.json2Pokemons(pokemons));
-        _win = new TzachFrame("test Ex2");
+        _win = new TzachFrame("Pokemon game - Ex2 OOP");
         // ImageIcon image = new ImageIcon("data/Pokemon-Logo.png");
         //_win.setIconImage(image.getImage());
         _win.setSize(900, 600);
@@ -146,6 +179,9 @@ public class Ex2 implements Runnable {
         }
     }
 
+    /**
+     * helper method to update the Arena.
+     */
     private void updateE() {
         for (CL_Pokemon temp : pokemon_list) {
             Arena.updateEdge(_ar.getPokemons().get(0), _ar.getGraph());
@@ -154,8 +190,7 @@ public class Ex2 implements Runnable {
 
     /**
      * Moves each of the agents along the edge,
-     * in case the agent is on a node the next destination (next edge) is chosen (randomly).
-     *
+     * in case the agent is on a node the next destination we active Shortests path Algorithm.
      * @param game
      * @param graph
      * @param
@@ -192,6 +227,13 @@ public class Ex2 implements Runnable {
         }
     }
 
+    /**
+     * helper method to link every agent to his closest pokemon.
+     * @param g
+     * @param src
+     * @param id
+     * @return
+     */
     //link every agent with nearest  pokemon.
     public static List<node_data> pathToPok(directed_weighted_graph g, int src, int id) {
         dw_graph_algorithms algo = new DWGraph_Algo();
@@ -216,6 +258,16 @@ public class Ex2 implements Runnable {
         return path;
     }
 
+    /**
+     * helper methos to return the shortest path, used ShortestPath algorithm.
+     * @param src
+     * @param index
+     * @param pos
+     * @param algo
+     * @param id
+     * @param g
+     * @return
+     */
     public static List<node_data> getPath(int src, int index, int pos, dw_graph_algorithms algo, int id, directed_weighted_graph g) {
         List<node_data> shortPath;
         shortPath = algo.shortestPath(src, index);
@@ -225,6 +277,12 @@ public class Ex2 implements Runnable {
         return shortPath;
     }
 
+    /**
+     * helper method to check if another Agent is on the way to the same pokemon.
+     * goal is to prevent that 2 Agents goes to the same pokemon.
+     * @param dest
+     * @return true if does, false if path is clear to go.
+     */
     public static boolean someoneOnTheWay(int dest) {
         for (int i = 0; i < agentAndPokemons.size(); i++) {
             if (agentAndPokemons.get(i) == dest) {
@@ -234,6 +292,10 @@ public class Ex2 implements Runnable {
         return true;
     }
 
+    /**
+     * helper method to check if the user enter ID to save result.
+     * @return
+     */
     public boolean thereIsID() {
         if (_id != -1) {
             flag = true;

@@ -25,11 +25,6 @@ public class TzachFrame extends JFrame{
     private static boolean _open = true;
     private static int _scenario = 0;
     private static int _id = -1;
-    private static JComboBox _sceneNum;
-    private static JButton _freePlay;
-    private static JButton _loginButton;
-    private static JTextField _userTxt;
-    private static JFrame login;
 
     TzachFrame(){}
 

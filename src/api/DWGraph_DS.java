@@ -11,6 +11,9 @@ public class DWGraph_DS implements directed_weighted_graph, Serializable {
     private int edgesCounter;
     private int MC = 0;
 
+    /**
+     * defult constructor
+     */
     public DWGraph_DS() {
         Nodes = new HashMap<Integer, node_data>();
         Edges = new HashMap<Integer, HashMap<Integer, edge_data>>();
@@ -18,12 +21,10 @@ public class DWGraph_DS implements directed_weighted_graph, Serializable {
         MC = 0;
     }
 
-public DWGraph_DS(HashMap<Integer,node_data>nodes,HashMap<Integer,HashMap<Integer,edge_data>> edgesD,int MC,int edgeCounter){
-        this.Nodes = nodes;
-        this.Edges = edgesD;
-        this.MC = MC;
-        this.edgesCounter = edgeCounter;
-}
+    /**
+     * constructor used for the deep copy function.
+     * @param other
+     */
     public DWGraph_DS(directed_weighted_graph other){
         this();
         Iterator<node_data> it = other.getV().iterator();
@@ -46,6 +47,12 @@ public DWGraph_DS(HashMap<Integer,node_data>nodes,HashMap<Integer,HashMap<Intege
         return Nodes.get(key);
     }
 
+    /**
+     * function to get the data on the edge between src and dest.
+     * @param src
+     * @param dest
+     * @return
+     */
     @Override
     public edge_data getEdge(int src, int dest) {
         if (getNode(src) != null && getNode(dest) != null) {
@@ -56,6 +63,10 @@ public DWGraph_DS(HashMap<Integer,node_data>nodes,HashMap<Integer,HashMap<Intege
         return null;
     }
 
+    /**
+     * add new node to the graph.
+     * @param n - node data to add.
+     */
     @Override
     public void addNode(node_data n) {
         if (Nodes.containsKey(n)) { // already exist
@@ -67,6 +78,12 @@ public DWGraph_DS(HashMap<Integer,node_data>nodes,HashMap<Integer,HashMap<Intege
         }
     }
 
+    /**
+     * connect 2 nodes, and put weight on edge.
+     * @param src - the source of the edge.
+     * @param dest - the destination of the edge.
+     * @param w - positive weight representing the cost (aka time, price, etc) between src-->dest.
+     */
     @Override
     public void connect(int src, int dest, double w) {
         NodeData nodeOne = (NodeData) Nodes.get(src);
@@ -82,11 +99,20 @@ public DWGraph_DS(HashMap<Integer,node_data>nodes,HashMap<Integer,HashMap<Intege
         }
     }
 
+    /**
+     * get Collection of all the nodes in the graph.
+     * @return
+     */
     @Override
     public Collection<node_data> getV() {
         return this.Nodes.values();
     }
 
+    /**
+     * get Collection of all the Edges from specific node.
+     * @param node_id
+     * @return
+     */
     @Override
     public Collection<edge_data> getE(int node_id) {
         return this.Edges.get(node_id).values();
@@ -96,6 +122,11 @@ public DWGraph_DS(HashMap<Integer,node_data>nodes,HashMap<Integer,HashMap<Intege
         return Edges.values();
     }
 
+    /**
+     * remove node from the graph, and also the edge's he connected with.
+     * @param key
+     * @return
+     */
     @Override
     public node_data removeNode(int key) {
         boolean flag = Nodes.containsKey(key);
@@ -114,6 +145,12 @@ public DWGraph_DS(HashMap<Integer,node_data>nodes,HashMap<Integer,HashMap<Intege
         return Nodes.remove(key);
     }
 
+    /**
+     * remove edge between src and dest.
+     * @param src
+     * @param dest
+     * @return
+     */
     @Override
     public edge_data removeEdge(int src, int dest) {
         if(src == dest){
@@ -155,6 +192,9 @@ public DWGraph_DS(HashMap<Integer,node_data>nodes,HashMap<Integer,HashMap<Intege
         return Edges.equals(that.Edges);
     }
 
+    /**
+     * class that represent Node in the graph.
+     */
     public static class NodeData implements node_data,Comparable<NodeData>,Serializable {
         private int id;
         private String _info;
@@ -178,15 +218,6 @@ public DWGraph_DS(HashMap<Integer,node_data>nodes,HashMap<Integer,HashMap<Intege
             this.location = node.getLocation();
         }
 
-        public NodeData(int key, double w) {
-
-            this.id = key;
-            this._weight = w;
-            this._info = "";
-            this._tag = 0;
-            this.pre = null;
-            this.location = new GeoLocation();
-        }
         public NodeData(int key, geo_location ge) {
 
             this.id = key;
@@ -271,6 +302,10 @@ public DWGraph_DS(HashMap<Integer,node_data>nodes,HashMap<Integer,HashMap<Intege
         }
     }
 
+    /**
+     * Class that represent an edge in the graph.
+     * every edge have a weight on it.
+     */
     public static class EdgeData implements edge_data,Serializable {
         int _src;
         int _dest;
@@ -296,7 +331,6 @@ public DWGraph_DS(HashMap<Integer,node_data>nodes,HashMap<Integer,HashMap<Intege
             this.pre = null;
 
         }
-
 
         public EdgeData(int srcVertex, int destVerex, double weight, int tag) {
             this._src = srcVertex;

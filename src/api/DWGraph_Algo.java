@@ -17,22 +17,39 @@ public class DWGraph_Algo implements dw_graph_algorithms, Serializable {
         this.graph = new DWGraph_DS();
     }
 
+    /**
+     * initiallize the graph.
+     * @param g
+     */
     @Override
     public void init(directed_weighted_graph g) {
         this.graph = g;
     }
 
+    /**
+     * return the graph.
+     * @return
+     */
     @Override
     public directed_weighted_graph getGraph() {
         return this.graph;
     }
 
+    /**
+     * preforme a deep copy of the graph.
+     * @return
+     */
     @Override
     public directed_weighted_graph copy() {
         DWGraph_DS newGraph = new DWGraph_DS(graph);
         return newGraph;
     }
 
+    /**
+     * method to check the Connectivity of the graph.
+     * "Strongly connected".
+     * @return
+     */
     @Override
     public boolean isConnected() {
         if (graph.nodeSize() == 0 || graph.nodeSize() == 1)
@@ -50,6 +67,13 @@ public class DWGraph_Algo implements dw_graph_algorithms, Serializable {
         return true;
     }
 
+    /**
+     * method that find weight of the shortest path
+     * between src and dest.
+     * @param src - start node
+     * @param dest - end (target) node
+     * @return the shortest weight.
+     */
     @Override
     public double shortestPathDist(int src, int dest) {
         if(this.graph.getNode(src) != null&&this.graph.getNode(dest)!=null) {
@@ -64,6 +88,13 @@ public class DWGraph_Algo implements dw_graph_algorithms, Serializable {
         return -1;
     }
 
+    /**
+     * method that return a List of the shortest path.
+     * used with Dijkstra algorithm.
+     * @param src - start node
+     * @param dest - end (target) node
+     * @return
+     */
     @Override
     public List<node_data> shortestPath(int src, int dest) {
         List<node_data> ans = new ArrayList<node_data>();
@@ -93,6 +124,11 @@ public class DWGraph_Algo implements dw_graph_algorithms, Serializable {
         return ans;
     }
 
+    /**
+     * method that save the graph into Json format.
+     * @param file - the file name (may include a relative path).
+     * @return true or false if the save success.
+     */
     @Override
     public boolean save(String file) {
         JsonObject graph = new JsonObject();
@@ -137,6 +173,11 @@ public class DWGraph_Algo implements dw_graph_algorithms, Serializable {
         return true;
     }
 
+    /**
+     * load a graph from Json format.
+     * @param file - file name of JSON file
+     * @return
+     */
     @Override
     public boolean load(String file) {
         try {
@@ -150,7 +191,6 @@ public class DWGraph_Algo implements dw_graph_algorithms, Serializable {
         } catch (FileNotFoundException e) {
             e.printStackTrace();
             return false;
-
         }
         return true;
     }

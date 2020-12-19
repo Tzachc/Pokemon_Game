@@ -18,6 +18,7 @@ public class LoginFrame extends JFrame implements ActionListener {
     private static JButton startButtom;
     private static JButton exitButton;
     private static JTextField TXTbuttom;
+    private static JTextField TXTbuttomS;
     private static JFrame login;
     private Image loginBack;
     private Graphics2D g2D;
@@ -38,7 +39,7 @@ public class LoginFrame extends JFrame implements ActionListener {
     }
 
     public int getStage() {
-        return stage;
+        return Integer.parseInt(TXTbuttomS.getText());
     }
 
     public boolean isActiive() {
@@ -110,13 +111,8 @@ public class LoginFrame extends JFrame implements ActionListener {
         TXTbuttom = new JTextField(20);
         TXTbuttom.setBounds(160, 60, 165, 25);
 
-        String scenes[] = new String[24];
-        for (int i = 0; i < 24; i++) {
-            scenes[i] = String.valueOf(i);
-        }
-        stageNumber = new JComboBox(scenes);
-        stageNumber.addActionListener(new LoginFrame());
-        stageNumber.setBounds(160, 100, 165, 25);
+        TXTbuttomS = new JTextField(20);
+        TXTbuttomS.setBounds(160,100,165,25);
 
         no_ID_game = new JButton("No ID game");
         no_ID_game.addActionListener(new LoginFrame());
@@ -133,7 +129,7 @@ public class LoginFrame extends JFrame implements ActionListener {
         panel.add(user);
         panel.add(scene);
         panel.add(TXTbuttom);
-        panel.add(stageNumber);
+        panel.add(TXTbuttomS);
         panel.add(no_ID_game);
         panel.add(startButtom);
         panel.add(exitButton);
