@@ -64,7 +64,7 @@ Pokemon game is a simple game, that have 24 stages for now, the idea of the game
 the goal is to catch the most of the pokemons on the graph in the limited time.
 check out our best results at Wiki page.
 
-**How to play??**
+# How to play?? 
 
 download the "Ex2.jar" file **and** the Data file and put them in the same folder.
 
